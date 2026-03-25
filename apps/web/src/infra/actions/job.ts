@@ -32,3 +32,43 @@ export async function createJob(formData: FormData) {
 
     revalidatePath('/dashboard')
 }
+
+export async function updateJobStatus(jobId: string, newStatus: JobStatus) {
+    const supabase = await createClient()
+
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new Error("Unauthorized")
+
+    const { error } = await supabase
+        .from('jobs')
+        .update({ status: newStatus, updated_at: new Date().toISOString() })
+        .eq('id', jobId)
+        .eq('user_id', user.id)
+
+    if (error) {
+        console.error("Error updating job:", error)
+        throw new Error("Failed to update job status")
+    }
+
+    revalidatePath('/dashboard')
+}
+
+export async function deleteJob(jobId: string) {
+    const supabase = await createClient()
+
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new Error("Unauthorized")
+
+    const { error } = await supabase
+        .from('jobs')
+        .delete()
+        .eq('id', jobId)
+        .eq('user_id', user.id)
+
+    if (error) {
+        console.error("Error deleting job:", error)
+        throw new Error("Failed to delete job")
+    }
+
+    revalidatePath('/dashboard')
+}

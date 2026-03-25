@@ -14,14 +14,14 @@ export default function AddJobForm() {
 
     return (
         <div className={styles.formContainer}>
-            <h2 className={styles.columnTitle} style={{ marginBottom: '1rem' }}>+ Quick Add Job</h2>
+            <h2 className={styles.columnTitle} style={{ marginBottom: '1.25rem' }}>+ Quick Add Job</h2>
             <form ref={formRef} action={action}>
                 <div className={styles.formGrid}>
                     <input className={styles.input} name="companyName" placeholder="Company Name" required />
                     <input className={styles.input} name="jobTitle" placeholder="Job Title (e.g. Frontend Developer)" required />
                     <input className={styles.input} name="url" type="url" placeholder="Link to Job (Optional)" />
 
-                    <select className={styles.input} name="status" required defaultValue="to_apply">
+                    <select className={`${styles.input} ${styles.selectInput}`} name="status" required defaultValue="to_apply">
                         <option value="to_apply">To Apply</option>
                         <option value="applied">Applied</option>
                         <option value="interview">Interview</option>
