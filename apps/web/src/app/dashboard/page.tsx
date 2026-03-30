@@ -4,6 +4,7 @@ import { logout } from '@/infra/actions/auth'
 import styles from '@/presentation/styles/Dashboard.module.css'
 import AddJobForm from '@/presentation/components/AddJobForm'
 import KanbanBoard from '@/presentation/components/KanbanBoard'
+import ThemeToggle from '@/presentation/components/ThemeToggle'
 
 export default async function DashboardPage() {
     const supabase = await createClient()
@@ -35,6 +36,7 @@ export default async function DashboardPage() {
             <header className={styles.header}>
                 <div className={styles.brand}>Postula</div>
                 <div className={styles.userInfo}>
+                    <ThemeToggle />
                     <span>{user.email}</span>
                     <form action={logout}>
                         <button type="submit" className={styles.logoutButton}>Log out</button>
