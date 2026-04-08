@@ -27,6 +27,8 @@ export default async function DashboardPage() {
         url: dbJob.url,
         status: dbJob.status,
         source: dbJob.source,
+        notes: dbJob.notes,
+        description: dbJob.description,
         createdAt: new Date(dbJob.created_at),
         updatedAt: new Date(dbJob.updated_at)
     }))

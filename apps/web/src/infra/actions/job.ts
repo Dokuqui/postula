@@ -72,3 +72,23 @@ export async function deleteJob(jobId: string) {
 
     revalidatePath('/dashboard')
 }
+
+export async function updateJobDetails(jobId: string, details: { description?: string; notes?: string }) {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new Error("Unauthorized")
+
+    const { error } = await supabase
+        .from('jobs')
+        .update({
+            description: details.description,
+            notes: details.notes,
+            updated_at: new Date().toISOString()
+        })
+        .eq('id', jobId)
+        .eq('user_id', user.id)
+
+    if (error) throw new Error("Failed to update details")
+
+    revalidatePath('/dashboard')
+}

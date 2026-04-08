@@ -9,6 +9,8 @@ export interface Job {
     url?: string;
     status: JobStatus;
     source: JobSource;
+    notes?: string,
+    description?: string,
     createdAt: Date;
     updatedAt: Date;
 }

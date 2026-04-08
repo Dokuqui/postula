@@ -1,71 +1,69 @@
 'use client'
 
 import { useState } from 'react'
+import { Trash2 } from 'lucide-react'
 import { deleteJob } from '@/infra/actions/job'
 import styles from '@/presentation/styles/Dashboard.module.css'
+import Portal from './Portal'
 
-interface Props {
-    jobId: string;
-}
-
-export default function JobCardActions({ jobId }: Props) {
+export default function JobCardActions({ jobId }: { jobId: string }) {
     const [showModal, setShowModal] = useState(false)
     const [isDeleting, setIsDeleting] = useState(false)
 
-    async function handleConfirmDelete() {
-        setIsDeleting(true)
-        await deleteJob(jobId)
+    const handleCancel = (e: React.MouseEvent) => {
+        e.preventDefault()
+        e.stopPropagation()
+        setShowModal(false)
     }
+
+    const TrashIcon = Trash2 as any;
 
     return (
         <>
             <button
+                type="button"
                 className={styles.deleteBtn}
-                onClick={() => setShowModal(true)}
+                onClick={(e) => {
+                    e.stopPropagation()
+                    setShowModal(true)
+                }}
                 title="Delete Job"
             >
-                <svg
-                    width="16" height="16" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-                >
-                    <path d="M3 6h18" />
-                    <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                    <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                </svg>
+                <TrashIcon size={16} strokeWidth={2.5} />
             </button>
 
             {showModal && (
-                <div
-                    className={styles.modalOverlay}
-                    onClick={() => setShowModal(false)}
-                >
-                    <div
-                        className={styles.modalContent}
-                        onClick={(e) => e.stopPropagation()}
-                    >
-                        <h3 className={styles.modalTitle}>Delete Application</h3>
-                        <p className={styles.modalText}>
-                            Are you sure you want to delete this job? This action cannot be undone.
-                        </p>
+                <Portal>
+                    <div className={styles.modalOverlay} onClick={handleCancel}>
+                        <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+                            <h3 className={styles.modalTitle}>Delete Application</h3>
+                            <p className={styles.modalText}>Are you sure? This cannot be undone.</p>
 
-                        <div className={styles.modalActions}>
-                            <button
-                                className={styles.cancelBtn}
-                                onClick={() => setShowModal(false)}
-                                disabled={isDeleting}
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                className={styles.confirmBtn}
-                                onClick={handleConfirmDelete}
-                                disabled={isDeleting}
-                            >
-                                {isDeleting ? 'Deleting...' : 'Delete'}
-                            </button>
+                            <div className={styles.modalActions}>
+                                <button
+                                    type="button"
+                                    className={styles.secondaryBtn}
+                                    onClick={handleCancel}
+                                    disabled={isDeleting}
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="button"
+                                    className={styles.confirmBtn}
+                                    onClick={async (e) => {
+                                        e.stopPropagation()
+                                        setIsDeleting(true)
+                                        await deleteJob(jobId)
+                                    }}
+                                    disabled={isDeleting}
+                                >
+                                    {isDeleting ? 'Deleting...' : 'Delete'}
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </Portal>
             )}
         </>
     )
